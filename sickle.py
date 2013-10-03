@@ -38,15 +38,15 @@ def main(argv):
     types = {sanger: 'fastq', illumina: 'fastq-illumina', solexa: 'fastq-solexa'}
     
     # check min_len is valid integer > 0
-    if not isinstance(min_len, int) or min_len <= 0
+    if not isinstance(min_len, int) or min_len <= 0:
         raise Exception("The specified min_len must be an integer > 0")
     
     # check fastq_format is valid
-    if fastq_format not in types
+    if fastq_format not in types:
         raise InvalidFastqformatException("You have specified an invalid Fastq format: " + fastq_format + ". Available formats: solexa (CASAVA < 1.3), illumina (CASAVA 1.3 to 1.7), sanger (CASAVA >= 1.8).")
 
     # check threshold is valid integer >= 1 and <= 40
-    if not isinstance(min_len, int) or min_len < 1 or min_len > 40
+    if not isinstance(min_len, int) or min_len < 1 or min_len > 40:
         raise Exception("The specified threshold must be an integer >= 1 and <= 40")
 
     # open the file, Bio.SeqIO will handle exceptions
