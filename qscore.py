@@ -9,7 +9,8 @@ class Fastq_Record(SeqRecord):
     '''A class to extend a SeqRecord to contain the human readable QScores
     and add function to trim the reads
     '''
-    def __init__(self):
+    def __init__(self, record):
+        self = record
         self.Qscore = self.letter_annotations["phred_quality"]
 
     def trim(five_prime, three_prime):

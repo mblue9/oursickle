@@ -17,9 +17,7 @@ def main(argv):
    
     # use getopt to get options
     try:
-        opts, args = getopt.getopt(argv,"hf:m:t:",["fastq_format=", "min_len=", "threshold="])
-        input_fastq = sys.argv[1]
-        output_fastq = sys.argv[2]
+        opts, args = getopt.getopt(argv,"hi:f:m:o:t:",["input_fastq", "fastq_format=", "min_len=", "output_fastq", "threshold="])
     except:
         print 'sickle.py -f <[solexa|illumina|sanger]> -m <min_len> -t <threshold> input_fastq output_fastq'
         sys.exit(2)
@@ -33,6 +31,10 @@ def main(argv):
            min_len = int(arg)
         elif opt in ("-t", "--threshold"):
            threshold = int(arg)
+        elif opt in ("-i", "--input_fastq"):
+           input_fastq = arg
+        elif opt in ("-o", "--output_fastq"):
+           output_fastq = arg
     
     
     # mapping from fastq_format to Bio.Seq
@@ -61,7 +63,7 @@ def main(argv):
         record = Fastq_Record(record)
         
         # determine window size
-        window_size = windowsize(len(record.seq))
+        window_size = WindowSize(len(record.seq))
         
         # determine cut points
         five_prime, three_prime = slide_window(record.Qscore, window_size, threshold)
