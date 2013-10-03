@@ -3,7 +3,7 @@
 import sys, getopt
 from Bio import SeqIO
 from qscore import Fastq_Record
-from window_size.py import WindowSize
+from window_size import WindowSize
 from window import slide_window
 
 # exception for when invalid Fastq format specified
@@ -13,14 +13,14 @@ class InvalidFastqformatException(Exception):
 # main function
 def main(argv):
     # get variables
-    input_fastq = sys.argv[1]
-    output_fastq = sys.argv[2]
     fastq_format = ''
    
     # use getopt to get options
     try:
         opts, args = getopt.getopt(argv,"hf:m:t:",["fastq_format=", "min_len=", "threshold="])
-    except getopt.GetoptError:
+        input_fastq = sys.argv[1]
+        output_fastq = sys.argv[2]
+    except:
         print 'sickle.py -f <[solexa|illumina|sanger]> -m <min_len> -t <threshold> input_fastq output_fastq'
         sys.exit(2)
     for opt, arg in opts:
@@ -30,12 +30,13 @@ def main(argv):
         elif opt in ("-f", "--fastq_format"):
            fastq_format = arg
         elif opt in ("-m", "--min_len"):
-           min_len = arg
+           min_len = int(arg)
         elif opt in ("-t", "--threshold"):
-           threshold = arg
+           threshold = int(arg)
+    
     
     # mapping from fastq_format to Bio.Seq
-    types = {sanger: 'fastq', illumina: 'fastq-illumina', solexa: 'fastq-solexa'}
+    types = {"sanger": 'fastq', "illumina": 'fastq-illumina', "solexa": 'fastq-solexa'}
     
     # check min_len is valid integer > 0
     if not isinstance(min_len, int) or min_len <= 0:
@@ -52,6 +53,9 @@ def main(argv):
     # open the file, Bio.SeqIO will handle exceptions
     handle = open(input_fastq, "rU")
     
+    # open file to write to, Bio.SeqIO will handle exceptions
+    out_handle = open(output_fastq, "w")
+    
     for record in SeqIO.parse(handle, types[fastq_format]):
         # grab next record and add qscore
         record = Fastq_Record(record)
@@ -62,11 +66,15 @@ def main(argv):
         # determine cut points
         five_prime, three_prime = slide_window(record.Qscore, window_size, threshold)
         
+        # if whole read poor quality indexes will both be -1 
+        if five_prime == -1 and three_prime == -1:
+            continue
+        
         # trim the reads
-        record.trim_read(five_prime, three_prime)
+        record.trim(five_prime, three_prime)
         
         # output read
-        
+        SeqIO.write(record, out_handle, "fastq")
     
 if __name__ == "__main__":
    main(sys.argv[1:])

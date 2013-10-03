@@ -1,3 +1,5 @@
+import doctest
+
 def WindowSize(n):
     '''Returns the appropriate window size for sickle
     The size is 0.1 times the length of the read.
@@ -13,10 +15,15 @@ def WindowSize(n):
     '''
     
     # check n is valid integer > 0
-    if not isinstance(n, int) or n <= 0
+    if not isinstance(n, int) or n <= 0:
         raise Exception("The length of the read must be > 0")
 
+    # calculate and return window size
     if n <= 10:
         return 1
     else:
         return int(n*0.1)
+        
+if __name__ == "__main__":
+    doctest.testmod()
+
