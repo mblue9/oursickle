@@ -1,0 +1,11 @@
+Date: 3rd Oct 2013
+Authors: Jason, Franco & Maria
+Program Name: oursickle
+
+This program will analyse a fastq file and trim low quality bases.It uses a sliding window and trims when the average quality score falls below the specified threshold. Both the start (5') and the end (3')of the reads will be checked.
+
+'sickle.py -f <[solexa|illumina|sanger]> -m <min_len> -t <threshold> input_fastq output_fastq'
+
+Input: fastq file
+Output:fastq file with low quality bases trimmed
+
