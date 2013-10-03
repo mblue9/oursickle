@@ -10,10 +10,10 @@ class Fastq_Record(SeqRecord):
     and add function to trim the reads
     '''
     def __init__(self, record):
-        self = record
+        self.__dict__.update(record.__dict__)
         self.Qscore = self.letter_annotations["phred_quality"]
 
-    def trim(five_prime, three_prime):
+    def trim(self, five_prime, three_prime):
         '''A function to trim a read
         takes as input two integers >= 0 and extracts and trims the sequence to these indices
         '''        

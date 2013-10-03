@@ -59,21 +59,18 @@ def main(argv):
     out_handle = open(output_fastq, "w")
     
     for record in SeqIO.parse(handle, types[fastq_format]):
-        # grab next record and add qscore
-        record = Fastq_Record(record)
-        
         # determine window size
         window_size = WindowSize(len(record.seq))
         
         # determine cut points
-        five_prime, three_prime = slide_window(record.Qscore, window_size, threshold)
+        five_prime, three_prime = slide_window(record.letter_annotations["phred_quality"], window_size, threshold)
         
         # if whole read poor quality indexes will both be -1 
         if five_prime == -1 and three_prime == -1:
             continue
         
         # trim the reads
-        record.trim(five_prime, three_prime)
+        record = record[five_prime:three_prime]
         
         # output read
         SeqIO.write(record, out_handle, "fastq")
